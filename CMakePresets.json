@@ -1,0 +1,65 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "base",
+      "displayName": "Base Config",
+      "description": "Base build using vcpkg and CUDA",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_MAKE_PROGRAM": "/home/ychen/Software/ninja-linux/ninja",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+        "CMAKE_C_COMPILER": "/usr/bin/gcc",
+        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++",
+        "CMAKE_CUDA_COMPILER": "/usr/local/cuda-12.3/bin/nvcc",
+        "CMAKE_TOOLCHAIN_FILE": "/home/ychen/Software/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "asan",
+      "inherits": "base",
+      "displayName": "Address Sanitizer",
+      "description": "Debug build with Address Sanitizer",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-scope",
+        "CMAKE_C_FLAGS": "-fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-scope",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address"
+      }
+    },
+    {
+      "name": "tsan",
+      "inherits": "base",
+      "displayName": "Thread Sanitizer",
+      "description": "Debug build with Thread Sanitizer",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=thread",
+        "CMAKE_C_FLAGS": "-fsanitize=thread",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=thread"
+      }
+    },
+    {
+      "name": "coverage",
+      "inherits": "base",
+      "displayName": "Coverage",
+      "description": "Debug build with coverage instrumentation",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fprofile-arcs -ftest-coverage",
+        "CMAKE_C_FLAGS": "-fprofile-arcs -ftest-coverage",
+        "CMAKE_EXE_LINKER_FLAGS": "--coverage"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "base",
+      "configuration": "Debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "base",
+      "configuration": "Release"
+    }
+  ]
+}
