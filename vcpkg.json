@@ -1,9 +1,5 @@
 {
   "dependencies": [
-    "boost-timer",
-    "boost-chrono",
-    "boost-system",
-    "boost-program-options"
   ],
   "vcpkg-configuration": {
     "default-registry": {

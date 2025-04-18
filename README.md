@@ -16,7 +16,7 @@ Note: You may need to modify the CMakeLists.txt file to match your GPU architect
 ```
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release .. --preset=arm-nvidia-grace
 make -j
 cd ..
 ```

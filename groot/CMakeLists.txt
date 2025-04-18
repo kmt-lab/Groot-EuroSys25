@@ -6,21 +6,29 @@ target_include_directories(grootlib
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_link_libraries(grootlib INTERFACE
-  OpenMP::OpenMP_CXX
-)
-
-target_link_libraries(grootlib INTERFACE
-  kgraph
-  Boost::timer
-  Boost::chrono
-  Boost::system
-  Boost::program_options)
+# Use the proper OpenMP flags
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64|arm64")
+  target_link_libraries(grootlib INTERFACE
+    OpenMP::OpenMP_CXX
+    kgraph
+    Boost::timer
+    Boost::chrono
+    Boost::system
+    Boost::program_options)
+else()
+  target_link_libraries(grootlib INTERFACE
+    OpenMP::OpenMP_CXX
+    kgraph
+    Boost::timer
+    Boost::chrono
+    Boost::system
+    Boost::program_options)
+endif()
 
 target_compile_options(grootlib INTERFACE
   $<$<CONFIG:Debug>:-G -g>
   $<$<COMPILE_LANGUAGE:CUDA>:
-  -Xcompiler=-fopenmp # OpenMP flags for CUDA compiler
+  -Xcompiler=-fopenmp # Correct OpenMP flag for gcc
   --extended-lambda
   --expt-relaxed-constexpr
   -w # Suppress warning -- though warning is usually helpful
