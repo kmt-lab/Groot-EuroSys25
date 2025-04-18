@@ -1,4 +1,6 @@
 # Groot
+Forked for use with NVIDIA Grace CPU.
+
 Groot: Graph-Centric Row Reordering with Tree for Sparse Matrix Multiplication on Tensor Cores
 
 ## Prerequisites
