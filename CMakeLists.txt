@@ -41,6 +41,16 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64|arm64")
     message(STATUS "Found NVIDIA OpenMP library: ${NVOMP_LIBRARY}")
 endif()
 
+if("${BUILD_COMPILER}" STREQUAL "nvc")
+        set(CMAKE_C_FLAGS "-mp -fast -O3 -Wall")
+        set(CMAKE_CXX_FLAGS "-mp -fast -O3 -Wall")
+else()
+	# gcc
+        set(CMAKE_C_FLAGS "-fopenmp -O3 -Wall")
+        set(CMAKE_CXX_FLAGS "-fopenmp -O3 -Wall")
+endif()
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -fopenmp -O3 -Wall")
+
 set(KGRAPH_ROOT "$ENV{HOME}/opt/kgraph")
 include_directories(${KGRAPH_ROOT}/include)
 link_directories(${KGRAPH_ROOT}/lib)
