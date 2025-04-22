@@ -56,4 +56,8 @@ include_directories(${KGRAPH_ROOT}/include)
 link_directories(${KGRAPH_ROOT}/lib)
 
 add_subdirectory(groot)
-add_subdirectory(apps)
+
+# Only build apps if not being included via FetchContent
+if(NOT GROOT_FETCHCONTENT_BUILD)
+    add_subdirectory(apps)
+endif()
