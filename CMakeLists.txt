@@ -4,12 +4,12 @@ project(groot_spmm)
 set(PROJECT_VERSION "0.1")
 
 enable_language(CUDA CXX)
-find_program(CMAKE_CUDA_COMPILER nvcc
-	PATHS
-	$ENV{NVHPC_ROOT}/compiler/bin
-	$ENV{PATH}/bin
-	/work/opt/local/aarch64/cores/nvidia/24.9/Linux_aarch64/24.9/compilers/bin
-	REQUIRED)
+#find_program(CMAKE_CUDA_COMPILER nvcc
+#	PATHS
+#	$ENV{NVHPC_ROOT}/compiler/bin
+#	$ENV{PATH}/bin
+#	/work/opt/local/aarch64/cores/nvidia/24.9/Linux_aarch64/24.9/compilers/bin
+#	REQUIRED)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 

@@ -45,11 +45,11 @@ auto sparse_hamming_distance = [](const thrust::host_vector<int>& a, const thrus
     while (i < a.size() && j < b.size()) {
         if (a[i] < b[j]) {
             ++i;
-            ++distance;
+            distance += 1;
         }
         else if (a[i] > b[j]) {
             ++j;
-            ++distance;
+            distance += 1;
         }
         else {
             ++i;
