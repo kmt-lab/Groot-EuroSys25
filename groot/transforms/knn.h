@@ -98,6 +98,7 @@ void set_index_params(Params& index_params, int K, int L)
     // index_params.recall = 1;
     // index_params.delta = 100;
     // index_params.seed = top_k;
+    index_params.seed = 250519;
 }
 
 template<typename Params>

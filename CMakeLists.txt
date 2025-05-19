@@ -51,13 +51,29 @@ else()
 endif()
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -fopenmp -O3 -Wall")
 
-set(KGRAPH_ROOT "$ENV{HOME}/opt/kgraph")
-include_directories(${KGRAPH_ROOT}/include)
-link_directories(${KGRAPH_ROOT}/lib)
-
 add_subdirectory(groot)
 
 # Only build apps if not being included via FetchContent
 if(NOT GROOT_FETCHCONTENT_BUILD)
+    include(FetchContent)
+    set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party)
+
+    FetchContent_Declare(
+        kgraph
+        GIT_REPOSITORY https://github.com/kmt-lab/kgraph.git
+        GIT_TAG master
+    )
+    FetchContent_MakeAvailable(kgraph)
+    set_target_properties(kgraph PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib
+    )
+    include_directories(${kgraph_SOURCE_DIR})
+    link_directories(${CMAKE_CURRENT_BINARY_DIR}/lib)
+    #set(KGRAPH_ROOT "$ENV{HOME}/opt/kgraph")
+    #include_directories(${KGRAPH_ROOT}/include)
+    #link_directories(${KGRAPH_ROOT}/lib)
+
     add_subdirectory(apps)
 endif()
