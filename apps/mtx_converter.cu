@@ -9,7 +9,6 @@ struct ConverterConfig {
     std::string input_file;
     std::string output_file;
     std::string output_original_file;
-    ReorderAlgo reorder = ReorderAlgo::Groot;
 };
 
 // Generate automatic filenames based on input file
@@ -53,9 +52,8 @@ ConverterConfig converter_program_options(int argc, char* argv[])
             "              [-i input_file] Input CSR file\n"
             "              [-o output_file] (Optional) Output MTX file after reordering\n"
             "              [-p output_original_file] (Optional) Output MTX file before reordering\n"
-            "              [-r reorder_algorithm (0: none, 1: groot)]\n\n"
             "If output files are not specified, they will be derived from the input filename:\n"
-            "For input 'file.csr', outputs will be 'file.mtx' and 'file_reordered.mtx'\n");
+            "For input 'file.csr', outputs will be 'file.mtx' and 'file_groot.mtx'\n");
         std::exit(EXIT_FAILURE);
     }
     while ((opt = getopt(argc, argv, "i:o:p:r:")) != -1) {
@@ -69,15 +67,11 @@ ConverterConfig converter_program_options(int argc, char* argv[])
             case 'p':
                 config.output_original_file = optarg;
                 break;
-            case 'r':
-                config.reorder = static_cast<ReorderAlgo>(std::stoi(optarg));
-                break;
             default:
                 printf("Usage: %s ... \n%s", argv[0],
                     "              [-i input_file] Input CSR file\n"
                     "              [-o output_file] (Optional) Output MTX file after reordering\n"
-                    "              [-p output_original_file] (Optional) Output MTX file before reordering\n"
-                    "              [-r reorder_algorithm (0: none, 1: groot)]\n");
+                    "              [-p output_original_file] (Optional) Output MTX file before reordering\n");
                 exit(EXIT_FAILURE);
         }
     }
@@ -90,7 +84,6 @@ ConverterConfig converter_program_options(int argc, char* argv[])
         printf("input path: %s\n", config.input_file.c_str());
     }
     printf("output original path: %s\n", config.output_original_file.c_str());
-    printf("reorder algorithm: %s\n", reorder_algo_to_string(config.reorder));
     printf("output reordered path: %s\n", config.output_file.c_str());
 
     return config;

@@ -44,7 +44,6 @@ void build_csr_cpu(CsrMatrix& mat, const Vector& new_id)
     thrust::copy(new_row.begin(), new_row.end(), mat.row_pointers.begin());
     thrust::copy(new_col.begin(), new_col.end(), mat.column_indices.begin());
     thrust::copy(new_val.begin(), new_val.end(), mat.values.begin());
-
 }
 
 template<typename CsrMatrix, typename Vector>
@@ -56,21 +55,20 @@ void build_csr_gpu(CsrMatrix& mat, const Vector& new_id)
 
     thrust::device_vector<IndexType> new_degree(mat.num_rows, 0);
 
-    // Assign the outdegree to new id using transform
+    //get_row_lengths_from_pointers(new_degree, mat.row_pointers);
     thrust::for_each(thrust::device,
                      thrust::make_counting_iterator<IndexType>(0),
                      thrust::make_counting_iterator<IndexType>(mat.num_rows),
-                     [new_deg = thrust::raw_pointer_cast(new_degree.data()),
-                      row_ptr = thrust::raw_pointer_cast(mat.row_pointers.data()),
-                      new_id  = thrust::raw_pointer_cast(new_id.data())] __device__(IndexType i) {
-                         new_deg[new_id[i]] = row_ptr[i + 1] - row_ptr[i];
+                     [row_ptr = thrust::raw_pointer_cast(mat.row_pointers.data()),
+                      new_degree = thrust::raw_pointer_cast(new_degree.data()),
+                      new_id = thrust::raw_pointer_cast(new_id.data())] __device__(IndexType i) {
+                         new_degree[new_id[i]] = row_ptr[i + 1] - row_ptr[i];
                      });
 
     // Build new row_index array
     thrust::device_vector<IndexType> new_row(mat.num_rows + 1, 0);
     thrust::inclusive_scan(new_degree.begin(), new_degree.end(), new_row.begin() + 1);
 
-    ASSERT(new_row.back() == mat.num_entries);
     // Allocate memory for new column indices and values
     thrust::device_vector<IndexType> new_col(mat.num_entries);
     thrust::device_vector<ValueType> new_val(mat.num_entries);
@@ -86,12 +84,13 @@ void build_csr_gpu(CsrMatrix& mat, const Vector& new_id)
                       new_col = thrust::raw_pointer_cast(new_col.data()),
                       new_val = thrust::raw_pointer_cast(new_val.data()),
                       new_id  = thrust::raw_pointer_cast(new_id.data())] __device__(IndexType i) {
-                         IndexType count     = 0;
+                         IndexType start     = row_ptr[i];
+                         IndexType end       = row_ptr[i + 1];
                          IndexType new_start = new_row[new_id[i]];
-                         for (IndexType j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
-                             new_col[new_start + count] = new_id[col_idx[j]];
-                             new_val[new_start + count] = values[j];
-                             count++;
+                         for (IndexType j = start; j < end; ++j) {
+                             IndexType offset            = j - start;
+                             new_col[new_start + offset] = new_id[col_idx[j]];
+                             new_val[new_start + offset] = values[j];
                          }
                      });
 
@@ -104,10 +103,6 @@ void build_csr_gpu(CsrMatrix& mat, const Vector& new_id)
 template<typename Config, typename CsrMatrix>
 void reorder_graph(Config config, CsrMatrix& mat)
 {
-    if (config.reorder == ReorderAlgo::None) {
-        return;
-    }
-
     printf("\n\n----------------Reordering Graph----------------\n");
     thrust::device_vector<int> new_ids(mat.num_rows);
 
@@ -125,9 +120,6 @@ void reorder_graph(Config config, CsrMatrix& mat)
     build_csr_gpu(mat, new_ids);
     timer.stop();
     printf("[Rebuilding] graph time (ms): %f \n", timer.elapsed());
-
-    // organize and prune the graph
-    sort_columns_per_row(mat);
 }
 
 }  // namespace groot
