@@ -110,7 +110,7 @@ void reorder_graph(Config config, CsrMatrix& mat)
     thrust::host_vector<int> new_ids_h(mat.num_rows);
     CPUTimer                 cpu_timer;
     cpu_timer.start();
-    groot(mat, new_ids_h);  // on CPU
+    groot(config, mat, new_ids_h);  // on CPU
     cpu_timer.stop();
     printf("[KNN_MST_DFS] Reordering time (ms): %f \n", cpu_timer.elapsed());
     thrust::copy(new_ids_h.begin(), new_ids_h.end(), new_ids.begin());

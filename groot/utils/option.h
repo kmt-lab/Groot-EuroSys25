@@ -8,6 +8,8 @@ namespace groot {
 struct Config {
     std::string input_file;
     std::string output_file;
+    unsigned i_k = 200;
+    unsigned s_k = 250;
 };
 
 std::string option_hints = "              [-i input_file]\n"

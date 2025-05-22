@@ -337,8 +337,8 @@ auto perform_DFS(const Tree& tree, const Vector& roots, Vector& new_ids)
     return max_depth;
 }
 
-template<typename CSR1, typename CSR2>
-auto build_KNN(const CSR1& mat, CSR2& knn)
+template<typename Config, typename CSR1, typename CSR2>
+auto build_KNN(Config config, const CSR1& mat, CSR2& knn)
 {
     const auto     nrow = mat.num_rows;
     AdjVector<int> graph;
@@ -350,9 +350,10 @@ auto build_KNN(const CSR1& mat, CSR2& knn)
     kgraph::KGraph::SearchParams search_params;
     //! parameter tuning:
     //! https://github.com/Lsyhprum/WEAVESS/tree/dev/parameters
-    unsigned i_k = std::min<unsigned>(nrow - 1, 20);  // 200
-    unsigned i_l = std::min<unsigned>(i_k + 50, 30);  // 300
-    unsigned s_k = std::min<unsigned>(nrow - 1, 25);  // 250
+    unsigned i_k = std::min<unsigned>(nrow - 1, config.i_k);  // 200
+    //unsigned i_l = std::min<unsigned>(i_k + 50, config.i_l);  // 300
+    unsigned i_l = (i_k);  // 300
+    unsigned s_k = std::min<unsigned>(nrow - 1, config.s_k);  // 250
     set_index_params(index_params, i_k, i_l);
     set_search_params(search_params, s_k);
 
@@ -378,8 +379,8 @@ auto build_KNN(const CSR1& mat, CSR2& knn)
     delete index;
 }
 
-template<typename CSR, typename Vector>
-auto groot(const CSR& mat, Vector& new_ids)
+template<typename Config, typename CSR, typename Vector>
+auto groot(Config config, const CSR& mat, Vector& new_ids)
 {
     CPUTimer timer;
     //+++++++++
@@ -391,7 +392,7 @@ auto groot(const CSR& mat, Vector& new_ids)
 
     timer.start();
 
-    build_KNN(mat, knn);  // reverse edges -> undirected
+    build_KNN(config, mat, knn);  // reverse edges -> undirected
     timer.stop();
     printf("[kGraph] time (ms): %f \n", timer.elapsed());
 

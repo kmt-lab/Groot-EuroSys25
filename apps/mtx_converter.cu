@@ -9,6 +9,10 @@ struct ConverterConfig {
     std::string input_file;
     std::string output_file;
     std::string output_original_file;
+    //unsigned i_k = 20;
+    //unsigned s_k = 25;
+    unsigned i_k = 200;
+    unsigned s_k = 250;
 };
 
 // Generate automatic filenames based on input file
