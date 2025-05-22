@@ -13,7 +13,10 @@ struct Config {
 };
 
 std::string option_hints = "              [-i input_file]\n"
-                           "              [-o output_file]\n";
+                           "              [-o output_file]\n"
+                           "              [-k i_k] (default: 200)\n"
+                           "              [-s s_k] (default: 250)\n";
+
 
 auto program_options(int argc, char* argv[])
 {
@@ -30,6 +33,12 @@ auto program_options(int argc, char* argv[])
                 break;
             case 'o':
                 config.output_file = optarg;
+                break;
+            case 'k':
+                config.i_k = std::stoul(optarg);
+                break;
+            case 's':
+                config.s_k = std::stoul(optarg);
                 break;
             default:
                 printf("Usage: %s ... \n%s", argv[0], option_hints.c_str());
