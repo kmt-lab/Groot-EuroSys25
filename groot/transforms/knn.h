@@ -62,15 +62,15 @@ auto sparse_hamming_distance = [](const thrust::host_vector<int>& a, const thrus
     return distance;
 };
 
-template<typename CSR>
-void convert_csr_to_adj(const CSR& mat, AdjVector<int>& adj)
+template<typename CSR, typename T>
+void convert_csr_to_adj(const CSR& mat, AdjVector<T>& adj)
 {
     adj.resize(mat.num_rows);
 
-    thrust::host_vector<int> rowptr_h = mat.row_pointers;
+    thrust::host_vector<T> rowptr_h = mat.row_pointers;
 
 #pragma omp parallel for
-    for (int i = 0; i < mat.num_rows; i++) {
+    for (size_t i = 0; i < mat.num_rows; i++) {
         const auto row_begin  = rowptr_h[i];
         const auto row_end    = rowptr_h[i + 1];
         const auto row_length = row_end - row_begin;
