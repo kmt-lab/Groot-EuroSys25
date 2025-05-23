@@ -245,7 +245,7 @@ auto build_MST(const COO& coo, Tree& tree, Vector& roots)
 
     // O(ElogV)  parents[source] = root
     // tree.adjs[source] = parents[source];
-    for (T i = 0; i < nnz; i++) {
+    for (size_t i = 0; i < nnz; i++) {
         auto source = coo.row_indices[i];
         auto target = coo.column_indices[i];
         auto weight = coo.values[i];
