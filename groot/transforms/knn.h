@@ -186,7 +186,7 @@ void clean_graph(const CSR& csr, COO& coo)
     int  new_size = thrust::distance(row_col_val_begin, new_end);
     coo.resize(coo.num_rows, coo.num_cols, new_size);
 
-    printf("unique size %d, new size %d\n", unique_size, new_size);
+    //printf("unique size %d, new size %d\n", unique_size, new_size);
     // print_zeros(coo, "after self-loop");
     // Sort by values
     thrust::sort_by_key(
@@ -263,7 +263,7 @@ auto build_MST(const COO& coo, Tree& tree, Vector& roots)
         for (const auto& [node, adjs] : tree.adjs) {
             num_edges += adjs.size();
         }
-        printf("total edges in tree: %d, expected edges: %d\n", num_edges, 2 * tree.num_nodes - 2);
+        //printf("total edges in tree: %d, expected edges: %d\n", num_edges, 2 * tree.num_nodes - 2);
     }
     // print_vec(parents, "parents ", 16);
     // print_vec(ranks, "ranks ", 16);
@@ -272,7 +272,7 @@ auto build_MST(const COO& coo, Tree& tree, Vector& roots)
                  thrust::counting_iterator<T>(nrow),
                  std::back_inserter(roots),
                  [parents_ptr = parents.data()](T i) { return i == parents_ptr[i]; });
-    printf("roots.size() = %lu\n", (unsigned long)roots.size());
+    //printf("roots.size() = %lu\n", (unsigned long)roots.size());
 
     return MST_weights;
 }
@@ -394,14 +394,14 @@ auto groot(Config config, const CSR& mat, Vector& new_ids)
 
     build_KNN(config, mat, knn);  // reverse edges -> undirected
     timer.stop();
-    printf("[kGraph] time (ms): %f \n", timer.elapsed());
+    //printf("[kGraph] time (ms): %f \n", timer.elapsed());
 
     ASSERT(knn.num_entries == knn.row_pointers.back() && knn.num_entries == knn.column_indices.size());
 
     //+++++++++
     //++ MST ++
     //+++++++++
-    std::cout << "Step 2: MST" << std::endl;
+    //std::cout << "Step 2: MST" << std::endl;
     //? csr -> coo
     CooMatrix<unsigned, float, host_memory> uknn;
     clean_graph(knn, uknn);  // prepare for MST
@@ -412,20 +412,20 @@ auto groot(Config config, const CSR& mat, Vector& new_ids)
     timer.start();
     auto weights = build_MST(uknn, tree, roots);
     timer.stop();
-    printf("[MST] time (ms): %f \n", timer.elapsed());
-    printf("total weights of MST: %.2f\n", weights);
+    //printf("[MST] time (ms): %f \n", timer.elapsed());
+    //printf("total weights of MST: %.2f\n", weights);
 
     //++++++++++++
     //++ DFS ++
     //++++++++++++
-    std::cout << "Step 3: DFS" << std::endl;
+    //std::cout << "Step 3: DFS" << std::endl;
     timer.start();
     auto depth = perform_DFS(tree, roots, new_ids);
     timer.stop();
-    printf("[DFS] time (ms): %f \n", timer.elapsed());
+    //printf("[DFS] time (ms): %f \n", timer.elapsed());
     ASSERT(new_ids.size() == mat.num_rows);
 
-    printf("Max Depth: %d\n", depth);
+    //printf("Max Depth: %d\n", depth);
 }
 
 }  // namespace groot
