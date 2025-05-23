@@ -110,6 +110,7 @@ void set_search_params(Params& search_params, int K)
     // search_params.seed = 1;
 }
 
+#if 0
 template<typename CSR1, typename CSR2>
 auto build_KNN_offline(const CSR1& mat, CSR2& knn)
 {
@@ -141,6 +142,7 @@ auto build_KNN_offline(const CSR1& mat, CSR2& knn)
     }
     delete index;
 }
+#endif
 
 template<typename CSR, typename COO>
 void clean_graph(const CSR& csr, COO& coo)
