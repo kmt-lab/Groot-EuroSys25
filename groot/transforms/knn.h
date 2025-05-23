@@ -272,7 +272,7 @@ auto build_MST(const COO& coo, Tree& tree, Vector& roots)
                  thrust::counting_iterator<T>(nrow),
                  std::back_inserter(roots),
                  [parents_ptr = parents.data()](T i) { return i == parents_ptr[i]; });
-    printf("roots.size() = %d\n", roots.size());
+    printf("roots.size() = %lu\n", (unsigned long)roots.size());
 
     return MST_weights;
 }
